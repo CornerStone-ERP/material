@@ -1,0 +1,24 @@
+{
+  "name": "@cornerstone-erp/model",
+  "version": "0.1.0",
+  "description": "ORM Engine for CornerStone ERP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CornerStone-ERP/model.git"
+  },
+  "keywords": [
+    "ORM",
+    "CornerStone",
+    "ERP"
+  ],
+  "author": "Ioan CHIRIAC",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/CornerStone-ERP/model/issues"
+  },
+  "homepage": "https://github.com/CornerStone-ERP/model#readme"
+}
