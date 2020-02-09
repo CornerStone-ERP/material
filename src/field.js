@@ -1,0 +1,98 @@
+/*!
+ * Copyright (C) 2020 (GPL 3.0 License)
+ * This file is part of CornerStone ERP
+ * See LICENSE file for full copyright and licensing details.
+ * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
+ * @url https://cornerstone-erp.com
+ */
+const ioc = require('../index');
+
+/**
+ * Private holder of defined fields by type
+ * 
+ * to extend an existing field :
+ * 
+ * ```js
+ * const Field = require('../index').Field;
+ * const BooleanField = Field.get('boolean');
+ * class CustomBoolean extends BooleanField {
+ *    // -- put here the class customi
+ * }
+ * Field.set('boolean', CustomBoolean);
+ * ```
+ */
+const types = {};
+
+/**
+ * Defines a field
+ */
+module.export = class Field {
+
+  /**
+   * Loads a field definition
+   * @param {*} type 
+   */
+  static get(type) {
+    if (!types.hasOwnProperty(type)) {
+      try {
+        require('./fields/' + type);
+      } catch(e) { /* ignore it */ }
+      if (!types.hasOwnProperty(type)) {
+        throw new Error(`Undefined field type "${type}"`);
+      }
+    }
+    return types[type];
+  }
+
+  /**
+   * Defines a new field type
+   * @param {*} type 
+   * @param {*} ctor 
+   */
+  static set(type, ctor) {
+    types[type] = ctor;
+  }
+
+  /**
+   * Declares a new field
+   * @param {*} model 
+   * @param {*} name 
+   * @param {*} type 
+   * @param {*} options 
+   */
+  static create(model, name, type, options) {
+    const ctor = ioc.Field.get(type);
+    const result = new ctor(type, model, name, options);
+    result._type = type;
+    return result;
+  }
+
+  /**
+   * Initialize a field manager
+   * @param {*} type 
+   * @param {*} model 
+   * @param {*} name 
+   * @param {*} options 
+   */
+  constructor(type, model, name, options) {
+    this._type = type;
+    this._model = model;
+    this._name = name;
+    this._options = options;
+  }
+  /**
+   * Updates a value over a record
+   * @param {*} record 
+   * @param {*} value 
+   */
+  write(record, value) {
+    record._write(this._name, value);
+  }
+  /**
+   * Reads a value over a record
+   * @param {*} record 
+   */
+  read(record) {
+    return record._read(this._name);
+  }
+}

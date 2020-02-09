@@ -1,14 +1,16 @@
-/**
- * Defines a session used during the request :
- * 
- * - date
- * - lang
- * - currency
- * - ip
- * - browser
- * - user_id
- * - structure_id
- * - acl
- * 
- * The acl is the level of access granted to the user, see acl object for more details
+/*!
+ * Copyright (C) 2020 (GPL 3.0 License)
+ * This file is part of CornerStone ERP
+ * See LICENSE file for full copyright and licensing details.
+ * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
+ * @url https://cornerstone-erp.com
  */
+module.exports = class Session {
+  constructor(driver, transaction) {
+    this._driver = driver;
+    this._transaction = transaction;
+  }
+  model(name) {
+    
+  }
+}
