@@ -1,5 +1,5 @@
 {
-  "name": "@cornerstone-erp/model",
+  "name": "@cornerstone-erp/material",
   "version": "0.1.0",
   "description": "ORM Engine for CornerStone ERP",
   "main": "index.js",
