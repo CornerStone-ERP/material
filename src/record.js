@@ -6,9 +6,9 @@
  * @url https://cornerstone-erp.com
  */
 
-const STATE_NEW       = 1;
-const STATE_SAVED     = 2;
-const STATE_DELETED   = 3;
+const STATE_NEW = 1;
+const STATE_SAVED = 2;
+const STATE_DELETED = 3;
 
 module.exports = class Record {
   constructor(model, data, id) {
@@ -23,9 +23,10 @@ module.exports = class Record {
     }
   }
   save() {
-
+    // @todo
   }
   delete() {
-
+    // @todo
+    this._state = STATE_DELETED;
   }
-}
+};

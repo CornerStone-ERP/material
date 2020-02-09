@@ -5,6 +5,4 @@
  * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
  * @url https://cornerstone-erp.com
  */
-module.exports = class Behavior {
-
-}
+module.exports = class Behavior {};

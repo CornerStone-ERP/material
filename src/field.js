@@ -5,13 +5,13 @@
  * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
  * @url https://cornerstone-erp.com
  */
-const ioc = require('../index');
+const ioc = require("../index");
 
 /**
  * Private holder of defined fields by type
- * 
+ *
  * to extend an existing field :
- * 
+ *
  * ```js
  * const Field = require('../index').Field;
  * const BooleanField = Field.get('boolean');
@@ -21,58 +21,58 @@ const ioc = require('../index');
  * Field.set('boolean', CustomBoolean);
  * ```
  */
-const types = {};
+const types = new Map();
 
 /**
  * Defines a field
  */
 module.export = class Field {
-
   /**
    * Loads a field definition
-   * @param {*} type 
+   * @param {*} type
    */
   static get(type) {
-    if (!types.hasOwnProperty(type)) {
+    if (!types.has(type)) {
       try {
-        require('./fields/' + type);
-      } catch(e) { /* ignore it */ }
-      if (!types.hasOwnProperty(type)) {
+        types.set(type, require("./fields/" + type));
+      } catch (e) {
+        /* ignore it */
+      }
+      if (!types.has(type)) {
         throw new Error(`Undefined field type "${type}"`);
       }
     }
-    return types[type];
+    return types.get(type);
   }
 
   /**
    * Defines a new field type
-   * @param {*} type 
-   * @param {*} ctor 
+   * @param {*} type
+   * @param {*} ctor
    */
   static set(type, ctor) {
-    types[type] = ctor;
+    types.set(type, ctor);
   }
 
   /**
    * Declares a new field
-   * @param {*} model 
-   * @param {*} name 
-   * @param {*} type 
-   * @param {*} options 
+   * @param {*} model
+   * @param {*} name
+   * @param {*} type
+   * @param {*} options
    */
   static create(model, name, type, options) {
     const ctor = ioc.Field.get(type);
     const result = new ctor(type, model, name, options);
-    result._type = type;
     return result;
   }
 
   /**
    * Initialize a field manager
-   * @param {*} type 
-   * @param {*} model 
-   * @param {*} name 
-   * @param {*} options 
+   * @param {*} type
+   * @param {*} model
+   * @param {*} name
+   * @param {*} options
    */
   constructor(type, model, name, options) {
     this._type = type;
@@ -82,17 +82,17 @@ module.export = class Field {
   }
   /**
    * Updates a value over a record
-   * @param {*} record 
-   * @param {*} value 
+   * @param {*} record
+   * @param {*} value
    */
   write(record, value) {
     record._write(this._name, value);
   }
   /**
    * Reads a value over a record
-   * @param {*} record 
+   * @param {*} record
    */
   read(record) {
     return record._read(this._name);
   }
-}
+};

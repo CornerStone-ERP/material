@@ -5,8 +5,6 @@
  * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
  * @url https://cornerstone-erp.com
  */
-const ioc = require('../../index');
+const ioc = require("../../index");
 
-module.exports = class FieldEnum extends ioc.Field {
-
-}
+module.exports = class FieldEnum extends ioc.Field {};

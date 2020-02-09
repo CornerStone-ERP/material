@@ -5,7 +5,5 @@
  * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
  * @url https://cornerstone-erp.com
  */
-const Driver = require('../driver');
-module.exports = class Mysql extends Driver {
-
-}
+const Driver = require("../driver");
+module.exports = class Mysql extends Driver {};
