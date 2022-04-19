@@ -11,13 +11,13 @@ module.exports = class Model {
   constructor(driver, name) {
     this._driver = driver;
     this._name = name;
-    this._behaviors = [];
-    this._fields = new Set();
+    this._behaviors = new Map();
+    this._fields = new Map();
     this._indexes = {};
-    this._records = {};
+    this._records = new Map();
   }
-  deploy() {
-    this._driver.deploy(this);
+  deploy(trx) {
+    return this._driver.deploy(trx, this);
   }
   hasField(field) {
     return this._fields.has(field);
@@ -29,12 +29,22 @@ module.exports = class Model {
     }
     return result;
   }
+  setBehavior(type, options) {
+    this._behaviors.set(type, ioc.Behavior.create(this, type, options));
+    return this._behaviors.get(type);
+  }
   addField(field, type, options) {
     if (this._fields.has(field)) {
       throw new Error(`Field "${this._name}.${field}" already defined`);
     }
-    this._fields[field] = ioc.Field.create(this, field, type, options);
-    return this._fields[field];
+    this._fields.set(field, ioc.Field.create(this, field, type, options));
+    return this._fields.get(field);
+  }
+  create(data) {}
+  browse(id) {
+    if (!this._records.has(id)) {
+    }
+    return this._records.get(id);
   }
   request() {
     return new ioc.Request(this);

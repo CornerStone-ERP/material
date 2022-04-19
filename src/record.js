@@ -7,8 +7,9 @@
  */
 
 const STATE_NEW = 1;
-const STATE_SAVED = 2;
-const STATE_DELETED = 3;
+const STATE_DIRTY = 2;
+const STATE_SAVED = 3;
+const STATE_DELETED = 4;
 
 module.exports = class Record {
   constructor(model, data, id) {
@@ -22,8 +23,23 @@ module.exports = class Record {
       this._state = STATE_SAVED;
     }
   }
+  /**
+   * Flush changes
+   */
+  write(data) {
+    for (const k in data) {
+      this._changes[k] = data[k];
+    }
+    if (this._state != STATE_NEW) {
+      this._state = STATE_DIRTY;
+    }
+    return this;
+  }
   save() {
     // @todo
+    if (this._state === STATE_NEW) {
+    } else if (this._state === STATE_DIRTY) {
+    }
   }
   delete() {
     // @todo

@@ -12,3 +12,8 @@
  * On the select request automatically injects inner join
  *
  */
+const ioc = require("../../index");
+
+module.exports = class Sortable extends ioc.Behavior {
+  deploy(table, model, knex) {}
+};

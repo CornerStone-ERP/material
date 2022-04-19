@@ -7,4 +7,15 @@
  */
 const ioc = require("../../index");
 
-module.exports = class FieldDate extends ioc.Field {};
+/**
+ * Options :
+ * * time : default true
+ */
+module.exports = class FieldDate extends ioc.Field {
+  deploy(table) {
+    if (this._options.time === false) {
+      return table.date(this._name);
+    }
+    return table.timestamp(this._name);
+  }
+};

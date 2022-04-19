@@ -26,7 +26,7 @@ const types = new Map();
 /**
  * Defines a field
  */
-module.export = class Field {
+module.exports = class Field {
   /**
    * Loads a field definition
    * @param {*} type
@@ -63,8 +63,7 @@ module.export = class Field {
    */
   static create(model, name, type, options) {
     const ctor = ioc.Field.get(type);
-    const result = new ctor(type, model, name, options);
-    return result;
+    return new ctor(type, model, name, options);
   }
 
   /**
@@ -78,8 +77,16 @@ module.export = class Field {
     this._type = type;
     this._model = model;
     this._name = name;
-    this._options = options;
+    this._options = options || {};
   }
+  /**
+   * Deploy on the database
+   */
+  // eslint-disable-next-line no-unused-vars
+  deploy(table, model, knex) {
+    throw new Error(`Field ${this._type} not implemented for ${model._name}`);
+  }
+
   /**
    * Updates a value over a record
    * @param {*} record

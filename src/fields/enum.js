@@ -6,5 +6,16 @@
  * @url https://cornerstone-erp.com
  */
 const ioc = require("../../index");
-
-module.exports = class FieldEnum extends ioc.Field {};
+/**
+ * Options :
+ *
+ */
+module.exports = class FieldEnum extends ioc.Field {
+  deploy(table) {
+    return table.enu(
+      this._name,
+      this._options.precision || 8,
+      this._options.scale || 2
+    );
+  }
+};

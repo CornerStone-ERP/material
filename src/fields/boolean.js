@@ -7,4 +7,8 @@
  */
 const ioc = require("../../index");
 
-module.exports = class FieldBoolean extends ioc.Field {};
+module.exports = class FieldBoolean extends ioc.Field {
+  deploy(table) {
+    return table.boolean(this._name);
+  }
+};

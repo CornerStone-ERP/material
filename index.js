@@ -1,5 +1,5 @@
 /*!
- * Copyright (C) 2020 (GPL 3.0 License)
+ * Copyright (C) 2020-2022 (GPL 3.0 License)
  * This file is part of CornerStone ERP
  * See LICENSE file for full copyright and licensing details.
  * @authors https://github.com/CornerStone-ERP/model/graphs/contributors
@@ -59,6 +59,12 @@ class IoC {
   }
   set Field(value) {
     this.register("field", value);
+  }
+  get Behavior() {
+    return this.ctor("behavior");
+  }
+  set Behavior(value) {
+    this.register("behavior", value);
   }
 }
 

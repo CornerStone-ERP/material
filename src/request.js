@@ -161,21 +161,20 @@ class FilterAnd {
   and() {
     return this;
   }
-  request() {
-    if (this._parent) {
-      return this._parent.request();
-    }
-    return this;
-  }
+
   parent() {
     if (!this._parent) {
       return this;
     }
-    return this._parent;
+    return this._parent.parent();
   }
 }
 
-class FilterOr {
+class FilterOr extends FilterAnd {
+  constructor(parent) {
+    super(parent);
+    this._type = "or";
+  }
   or() {
     return this;
   }
@@ -206,5 +205,9 @@ module.exports = class Request extends FilterAnd {
   orderDesc(field) {
     this._orders[field] = false;
     return this;
+  }
+  request() {
+    const request = this.parent();
+    return request._model._driver.request(request);
   }
 };

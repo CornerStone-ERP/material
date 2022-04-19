@@ -7,4 +7,12 @@
  */
 const ioc = require("../../index");
 
-module.exports = class FieldDecimal extends ioc.Field {};
+module.exports = class FieldDecimal extends ioc.Field {
+  deploy(table) {
+    return table.decimal(
+      this._name,
+      this._options.precision || 8,
+      this._options.scale || 2
+    );
+  }
+};

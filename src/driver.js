@@ -7,10 +7,12 @@
  */
 const EventEmitter = require("events");
 const ioc = require("../index");
+const knex = require("knex");
 
 const TYPE = Symbol("type");
 const OPTIONS = Symbol("options");
 const MODELS = Symbol("models");
+const CNX = Symbol("connection");
 
 const drivers = new Map();
 
@@ -30,7 +32,7 @@ module.exports = class Driver extends EventEmitter {
         throw new Error(`Undefined driver type "${type}"`);
       }
     }
-    return drivers[type];
+    return drivers.get(type);
   }
 
   /**
@@ -39,7 +41,7 @@ module.exports = class Driver extends EventEmitter {
    * @param {*} ctor
    */
   static set(type, ctor) {
-    drivers.set(type, ctor);
+    return drivers.set(type, ctor);
   }
 
   /**
@@ -62,6 +64,27 @@ module.exports = class Driver extends EventEmitter {
     this[TYPE] = type;
     this[OPTIONS] = options;
     this[MODELS] = new Map();
+    this[CNX] = knex({
+      client: type,
+      connection: options,
+    });
+  }
+
+  /**
+   * Gets the knew instance
+   */
+  sql() {
+    return this[CNX];
+  }
+
+  /**
+   * Gets an option (if not found return defaults)
+   */
+  option(name, def = null) {
+    if (this[OPTIONS][name]) {
+      return this[OPTIONS][name];
+    }
+    return def;
   }
 
   /**
@@ -70,7 +93,11 @@ module.exports = class Driver extends EventEmitter {
    * @param {*} ctor
    */
   define(model, ctor) {
+    if (!ctor) {
+      ctor = new ioc.Model(this, model);
+    }
     this[MODELS].set(model, ctor);
+    return ctor;
   }
 
   /**
@@ -91,21 +118,38 @@ module.exports = class Driver extends EventEmitter {
    */
   // eslint-disable-next-line no-unused-vars
   deploy(transaction, model) {
-    throw new Error("Not implemented");
+    if (!transaction) {
+      transaction = this.sql();
+    }
+    return transaction.schema.createTable(
+      model._name.replace(".", "_"),
+      function(table) {
+        table.increments().primary();
+        model._fields.forEach(function(field) {
+          field.deploy(table, model, transaction);
+        });
+        model._behaviors.forEach(function(behavior) {
+          behavior.deploy(table, model, transaction);
+        });
+      }
+    );
   }
 
   /**
    * Starts a new transaction
+   * @return Promise<trx>
    */
   transaction() {
-    throw new Error("Not implemented");
+    return this[CNX].transaction();
   }
 
   /**
    * Initialize a session instance (for working with models)
+   * @return Promise<Session>
    */
   session() {
-    const transaction = this.transaction();
-    return new ioc.Session(this, transaction);
+    return this.transaction().then((transaction) => {
+      return new ioc.Session(this, transaction);
+    });
   }
 };
